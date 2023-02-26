@@ -64,12 +64,12 @@ async def get_sub_fin(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def do_parse():
-    ress = parse()
+    ress = all_parse()
     if ress:
         ids = get_ids()
         for i in ids:
             for res in ress:
-                await bot.send_message(i[0], f"{res[1]}\n\nОплата: {res[3]}\nСрок выполнения: {res[4]}\n\n{res[2]}\n{res[0]}")
+                await bot.send_message(i[0], f"Заказ с сайта {res[0]}\n{res[1]}\n\nОплата: {res[2]}\nСрок выполнения: {res[3]}\n\n{res[4]}\n{res[5]}")
 
 async def scheduler():
     sch.every(15).seconds.do(do_parse,)
@@ -81,5 +81,6 @@ async def on_startup(x):
     asyncio.create_task(scheduler())
 
 if __name__ == '__main__':
-    login()
+    open()
+    login_frlnc()
     executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
