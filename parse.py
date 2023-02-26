@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 import datetime
+import psutil
 
 proj_hrefs_frlnc = []
 proj_hrefs_fl = []
@@ -10,7 +11,9 @@ proj_hrefs_fl = []
 file = Service("./chromedriver.exe")
 
 options = webdriver.ChromeOptions()
+#options.add_argument("--no-sandbox")
 #options.headless = True
+
 
 def open():
     global browser
@@ -100,9 +103,13 @@ def parse_frlnc():
         else:
             return False
     except:
-        browser.close()
-        browser.switch_to.window(browser.window_handles[0])
-        browser.close()
+        browser.quit()
+        PROCNAME = "chrome"  # to clean up zombie Chrome browser
+        # PROCNAME = "chromedriver" # to clean up zombie ChromeDriver
+        for proc in psutil.process_iter():
+            # check whether the process name matches
+            if proc.name() == PROCNAME:
+                proc.kill()
         do_all()
 
 def parse_fl():
@@ -139,9 +146,13 @@ def parse_fl():
         else:
             return False
     except:
-        browser.close()
-        browser.switch_to.window(browser.window_handles[0])
-        browser.close()
+        browser.quit()
+        PROCNAME = "chrome"  # to clean up zombie Chrome browser
+        # PROCNAME = "chromedriver" # to clean up zombie ChromeDriver
+        for proc in psutil.process_iter():
+            # check whether the process name matches
+            if proc.name() == PROCNAME:
+                proc.kill()
         do_all()
 
 def all_parse():
@@ -178,5 +189,16 @@ def do_all():
     else:
         return flag
 
+def clear():
+    driver = webdriver.Chrome(service=file, options=options)
+    driver.get('http://google.com/')
 
+    PROCNAME = "chrome"  # to clean up zombie Chrome browser
+    # PROCNAME = "chromedriver" # to clean up zombie ChromeDriver
+    for proc in psutil.process_iter():
+        # check whether the process name matches
+        if proc.name() == PROCNAME:
+            print("kill")
+            proc.kill()
 
+clear()
